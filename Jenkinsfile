@@ -1,6 +1,4 @@
-
 pipeline {
-
 
     options{
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
@@ -31,8 +29,8 @@ pipeline {
                 stage('pylint') {
                     steps {
                         script {
-                            logs.info 'Starting'
-                            logs.warning 'Nothing to do!'
+                            logs.info 'Start'
+                            logs.warning 'you cant  do anything  '
                             sh "python3 -m pylint *.py || true"
                         }
                     }
