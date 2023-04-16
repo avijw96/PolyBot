@@ -8,7 +8,7 @@ pipeline {
    }
     agent{
      docker {
-        image 'avijw96/private-course:jenkins-agent'
+         image 'jenkins-agent:latest'
         args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
     }
