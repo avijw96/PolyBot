@@ -48,7 +48,7 @@ pipeline {
         }
         stage('snyk test') {
             steps {
-                sh "snyk container test --severity-threshold=critical avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
+                sh "snyk container test --severity-threshold=critical avijwdocker/pavi:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
             }
         }
         stage('push') {
