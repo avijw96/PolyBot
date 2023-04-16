@@ -1,20 +1,22 @@
 pipeline {
 
-    options{
-    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
-    disableConcurrentBuilds()
-
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '5', numToKeepStr: '3'))
+        disableConcurrentBuilds()
+        timestamps()
+        timeout(time: 10, unit: 'MINUTES')
    }
     agent{
      docker {
-        image 'jenkins-agent:latest'
+        image 'avijw96/private-course:jenkins-agent'
         args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
     }
     environment{
         SNYK_TOKEN = credentials('snyk-token')
     }
-    stages {
+    s
+    tages {
         stage('Test') {
             parallel {
                 stage('pytest') {
