@@ -1,21 +1,18 @@
 pipeline {
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '5', numToKeepStr: '3'))
-        disableConcurrentBuilds()
-        timestamps()
-        timeout(time: 10, unit: 'MINUTES')
+    options{
+    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
+    disableConcurrentBuilds()
    }
     agent{
      docker {
          image 'jenkins-agent:latest'
         args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-    }
+         }
     }
     environment{
         SNYK_TOKEN = credentials('snyk-token')
     }
-    s
     stages {
        stage('Build Polyapp') {
                steps {
