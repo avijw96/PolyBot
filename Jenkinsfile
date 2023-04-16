@@ -15,7 +15,7 @@ pipeline {
        stage('Build Polyapp') {
                steps {
                  withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                  sh "docker build -t avijwdocker/app-tel-avi:poly-bot-${env.BUILD_NUMBER} . "
+                  sh "docker build -t avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
                   sh "docker login --username $user --password $pass"
                     }
                 }
@@ -46,8 +46,7 @@ pipeline {
 
         stage('push') {
             steps {
-                    sh "docker push avijwdocker/app-tel-avi:poly-bot-${env.BUILD_NUMBER}"
-                }
+                    sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} . "
             }
 
         }
