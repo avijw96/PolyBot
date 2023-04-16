@@ -56,6 +56,7 @@ pipeline {
         stage('push') {
             steps {
                     sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
+                }
             }
 
         }
