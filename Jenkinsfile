@@ -17,6 +17,14 @@ pipeline {
     }
     s
     stages {
+       stage('Build Polyapp') {
+               steps {
+                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                  sh "docker build -t avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} . "
+                  sh "docker login --username $user --password $pass"
+                    }
+                }
+            }
         stage('Test') {
             parallel {
                 stage('pytest') {
@@ -39,15 +47,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Polyapp') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
 
-                  sh "docker build -t avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} . "
-                  sh "docker login --username $user --password $pass"
-                }
-            }
-        }
         stage('snyk test') {
             steps {
                 sh "snyk container test --severity-threshold=critical avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
