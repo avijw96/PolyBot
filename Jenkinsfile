@@ -16,7 +16,7 @@ pipeline {
         SNYK_TOKEN = credentials('snyk-token')
     }
     s
-    tages {
+    stages {
         stage('Test') {
             parallel {
                 stage('pytest') {
@@ -39,7 +39,7 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+        stage('Build Polyapp') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
 
