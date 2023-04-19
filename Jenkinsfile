@@ -24,21 +24,21 @@ pipeline {
             parallel {
                 stage('pytest'){
                         steps{
-                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
-                            sh "cp ${TOKEN_FILE} ./.telegramToken"
-                            sh 'pip3 install --no-cache-dir -r requirements.txt'
-                            sh 'python3 -m pytest --junitxml results.xml tests/*.py'
+                      steps {
+                          withCredentials([string(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
+                             sh "touch .telegramToken"
+                             sh "echo ${TELEGRAM_TOKEN} > .telegramToken"
+                                sh "python3 -m pytest --junitxml results.xml tests/polytest.py"
                                      }
                                  }
-                             }//
+                             }
                stage('pylint') {
-                         steps {
-                         catchError(message:'pylint ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
-                              script {
+                            steps {
 
+                              script {
                                      sh "python3 -m pylint *.py || true"
                                      }
-                                  }//close catchError
+
                                }//close steps
                            }//close stage pylint
                    }//close parallel
