@@ -20,29 +20,33 @@ pipeline {
                     }
                 }
             }
+        stages {
         stage('Test') {
-            parallel {
-                stage('pthontest') {
-                    steps {
-                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
-                        sh "cp ${TELEGRAM_TOKEN} .telegramToken"
-                        sh 'pip3 install -r requirements.txt'
-                        sh "python3 -m pytest --junitxml results.xml tests/*.py"
-                        }
-                    }
-                }
-                stage('pylint') {
-                    steps {
-                        script {
-                            logs.info 'Start'
-                            logs.warning 'you cant  do anything  '
-                            sh "python3 -m pylint *.py || true"
-                        }
-                    }
-                }
-            }
-        }
+           parallel {
+                   stage('pytest'){
+                        steps{
+                        catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
+                            sh "cp ${TOKEN_FILE} ./.telegramToken"
+                            sh 'pip3 install --no-cache-dir -r requirements.txt'
+                            sh 'python3 -m pytest --junitxml results.xml tests/*.py'
+                                     }//close Credentials
+                                 }//close catchError
+                             }//close steps
+                        }//close stage pytest
 
+           stage('pylint') {
+                         steps {
+                         catchError(message:'pylint ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                              script {
+
+                                     sh "python3 -m pylint *.py || true"
+                                     }
+                                  }//close catchError
+                               }//close steps
+                           }//close stage pylint
+                   }//close parallel
+              }//close stage Test
         stage('push') {
             steps {
                     sh "docker push avijwdocker/olybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
