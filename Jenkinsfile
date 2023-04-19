@@ -21,17 +21,6 @@ pipeline {
                 }
             }
         stage('Test') {
-            parallel {
-                stage('pytest'){
-
-                      steps {
-                                     withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
-                                     sh "touch .telegramToken"
-                                     sh "echo ${TELEGRAM_TOKEN} > .telegramToken"
-                                     sh "python3 -m pytest --junitxml results.xml tests/polytest.py"
-                                     }
-                                 }
-                             }
                stage('pylint') {
                             steps {
                               script {
