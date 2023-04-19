@@ -20,10 +20,9 @@ pipeline {
                     }
                 }
             }
-        stages {
         stage('Test') {
-           parallel {
-                   stage('pytest'){
+            parallel {
+                sstage('pytest'){
                         steps{
                         catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                         withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
@@ -35,7 +34,7 @@ pipeline {
                              }//close steps
                         }//close stage pytest
 
-           stage('pylint') {
+               stage('pylint') {
                          steps {
                          catchError(message:'pylint ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                               script {
@@ -47,6 +46,8 @@ pipeline {
                            }//close stage pylint
                    }//close parallel
               }//close stage Test
+
+
         stage('push') {
             steps {
                     sh "docker push avijwdocker/olybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
