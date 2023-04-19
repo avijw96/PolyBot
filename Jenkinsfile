@@ -22,7 +22,7 @@ pipeline {
             }
         stage('Test') {
             parallel {
-                sstage('pytest'){
+                stage('pytest'){
                         steps{
                         catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                         withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
