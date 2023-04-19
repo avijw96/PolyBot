@@ -37,7 +37,11 @@ pipeline {
               }//close stage Test
        stage('snyk test') {
             steps {
-                sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
+                // Run Snyk tests
+                snykSecurityTests(
+                    target: '.',
+
+                    apiTokenId: 'snyk-token'
              }
            }
         stage('push') {
