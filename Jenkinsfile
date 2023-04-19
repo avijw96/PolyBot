@@ -38,10 +38,7 @@ pipeline {
        stage('snyk test') {
             steps {
                 // Run Snyk tests
-                snykSecurityTests(
-                    target: '.',
-
-                    apiTokenId: 'snyk-token'
+                snykSecurityTests(target: '.',piTokenId: 'snyk-token')
              }
            }
         stage('push') {
