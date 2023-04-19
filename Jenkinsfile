@@ -22,6 +22,15 @@ pipeline {
             }
         stage('Test') {
             parallel {
+                stage('pthontest') {
+                    steps {
+                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
+                        sh "cp ${TELEGRAM_TOKEN} .telegramToken"
+                        sh 'pip3 install -r requirements.txt'
+                        sh "python3 -m pytest --junitxml results.xml tests/*.py"
+                        }
+                    }
+                }
                 stage('pylint') {
                     steps {
                         script {
@@ -36,7 +45,7 @@ pipeline {
 
         stage('push') {
             steps {
-                    sh "docker push avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
+                    sh "docker push avijwdocker/olybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
                 }
             }
 
