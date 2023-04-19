@@ -50,7 +50,7 @@ pipeline {
 
         stage('push') {
             steps {
-                    sh "docker push avijwdocker/olybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
+                    sh "docker push avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
                 }
             }
 
