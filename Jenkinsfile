@@ -35,7 +35,7 @@ pipeline {
               }
        stage('snyk test') {
             steps {
-             withCredentials([usernamePassword(credentialsId: 'snyk-token') {
+            withCredentials([usernamePassword(credentialsId: 'snyk-token')]) {
                 sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
                 }
              }
