@@ -23,22 +23,20 @@ pipeline {
         stage('Test') {
             parallel {
                 stage('pytest'){
-                        steps{
+
                       steps {
                           withCredentials([string(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
                              sh "touch .telegramToken"
                              sh "echo ${TELEGRAM_TOKEN} > .telegramToken"
-                                sh "python3 -m pytest --junitxml results.xml tests/polytest.py"
+                               sh "python3 -m pytest --junitxml results.xml tests/polytest.py"
                                      }
                                  }
                              }
                stage('pylint') {
                             steps {
-
                               script {
                                      sh "python3 -m pylint *.py || true"
                                      }
-
                                }//close steps
                            }//close stage pylint
                    }//close parallel
