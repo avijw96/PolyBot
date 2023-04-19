@@ -13,7 +13,6 @@ pipeline {
               args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
          }
     }
-
     stages {
        stage('Build Polyapp') {
                steps {
@@ -31,10 +30,10 @@ pipeline {
                               script {
                                      sh "python3 -m pylint *.py || true"
                                      }
-                               }//close steps
-                           }//close stage pylint
-                   }//close parallel
-              }//close stage Test
+                               }
+                           }
+                   }
+              }
        stage('snyk test') {
             steps {
                 sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
