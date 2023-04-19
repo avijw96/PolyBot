@@ -24,7 +24,6 @@ pipeline {
             }
         stage('Test') {
         parallel{
-
                stage('pylint') {
                             steps {
                               script {
@@ -36,7 +35,9 @@ pipeline {
               }
        stage('snyk test') {
             steps {
+             withCredentials([usernamePassword(credentialsId: 'snyk-token') {
                 sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
+                }
              }
            }
         stage('push') {
