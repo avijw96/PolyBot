@@ -1,19 +1,15 @@
 pipeline {
 
-
     options{
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
     disableConcurrentBuilds()
-
-   }
+    }
     agent{
      docker {
         image 'jenkinsagent:latest'
         args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
-   
     stages {
         stage('Test') {
             parallel {
@@ -46,11 +42,9 @@ pipeline {
                 }
             }
         }
-        
         stage('push') {
             steps {
                     sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
+                }
             }
-
         }
-    }
