@@ -1,24 +1,22 @@
+
 pipeline {
+
 
     options{
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
     disableConcurrentBuilds()
+
    }
     agent{
-         docker{
-              image 'jenkinsagent:latest'
-              args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-         }
+     docker {
+        image 'jenkinsagent:latest'
+        args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+    }
+    }
+    environment{
+        SNYK_TOKEN = credentials('snyk-token')
     }
     stages {
-       stage('Build Polyapp') {
-               steps {
-                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                  sh "docker build -t avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
-                  sh "docker login --username $user --password $pass"
-                    }
-                }
-            }
         stage('Test') {
             parallel {
                 stage('pytest') {
@@ -33,21 +31,32 @@ pipeline {
                 stage('pylint') {
                     steps {
                         script {
-                            logs.info 'Start'
-                            logs.warning 'you cant  do anything  '
+                            logs.info 'Starting'
+                            logs.warning 'Nothing to do!'
                             sh "python3 -m pylint *.py || true"
                         }
                     }
                 }
             }
         }
+        stage('Build') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
 
-
+                  sh "docker build -t avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} . "
+                  sh "docker login --username $user --password $pass"
+                }
+            }
+        }
+        stage('snyk test') {
+            steps {
+                sh "snyk container test --severity-threshold=critical avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
+            }
+        }
         stage('push') {
             steps {
-                    sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} . "
+                    sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
             }
 
         }
 
-    }
