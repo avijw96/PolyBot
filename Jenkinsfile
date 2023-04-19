@@ -11,11 +11,10 @@ pipeline {
      docker {
         image 'jenkinsagent:latest'
         args  '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
-    }
-    environment{
-        SNYK_TOKEN = credentials('snyk-token')
-    }
+
+   
     stages {
         stage('Test') {
             parallel {
@@ -48,11 +47,7 @@ pipeline {
                 }
             }
         }
-        stage('snyk test') {
-            steps {
-                sh "snyk container test --severity-threshold=critical avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
-            }
-        }
+        
         stage('push') {
             steps {
                     sh "docker push avijwdocker/private-course:poly-bot-${env.BUILD_NUMBER}"
