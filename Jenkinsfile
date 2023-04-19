@@ -4,6 +4,9 @@ pipeline {
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
     disableConcurrentBuilds()
    }
+    environment{
+        SNYK_TOKEN = credentials('snyk-token')
+    }
     agent{
          docker{
               image 'jenkinsagent:latest'
@@ -32,7 +35,11 @@ pipeline {
                            }//close stage pylint
                    }//close parallel
               }//close stage Test
-
+        stage('snyk test') {
+            steps {
+                sh "snyk container test --severity-threshold=critical ronhad/private-course:poly-bot-${env.BUILD_NUMBER} --file=Dockerfile"
+            }
+        }
         stage('push') {
             steps {
                     sh "docker push avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
