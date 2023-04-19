@@ -21,6 +21,8 @@ pipeline {
                 }
             }
         stage('Test') {
+        parallel{
+
                stage('pylint') {
                             steps {
                               script {
@@ -30,7 +32,6 @@ pipeline {
                            }//close stage pylint
                    }//close parallel
               }//close stage Test
-
 
         stage('push') {
             steps {
