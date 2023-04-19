@@ -20,7 +20,19 @@ pipeline {
                     }
                 }
             }
+        stage('Test') {
 
+                stage('pylint') {
+                    steps {
+                        script {
+                            logs.info 'Start'
+                            logs.warning 'you cant  do anything  '
+                            sh "python3 -m pylint *.py || true"
+                        }
+                    }
+                }
+            }
+        }
 
         stage('push') {
             steps {
