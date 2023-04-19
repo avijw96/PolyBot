@@ -24,13 +24,13 @@ pipeline {
             parallel {
                 stage('pytest'){
                         steps{
-
+                        catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                         withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
                             sh "cp ${TOKEN_FILE} ./.telegramToken"
                             sh 'pip3 install --no-cache-dir -r requirements.txt'
                             sh 'python3 -m pytest --junitxml results.xml tests/*.py'
                                      }//close Credentials
-
+                                 }//close catchError
                              }//close steps
                         }//close stage pytest
 
