@@ -1,3 +1,7 @@
+// @Library('shared-lib-int') _
+
+//library 'shared-lib-int@main'
+
 pipeline {
     options {
         // Configure build discarder using LogRotator strategy
@@ -15,8 +19,10 @@ pipeline {
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+
     stages {
         // Define stages for the pipeline
+
         stage('Build Polyapp') {
             steps {
                 // Use Jenkins credentials 'docker-hub-credentials' to login to Docker Hub
@@ -27,32 +33,37 @@ pipeline {
                 }
             }
         }
+
         stage('Test') {
             // Define a parallel stage for testing
             parallel {
-            stage('pytest') {
+                stage('pytest') {
                     steps {
-                    catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
-                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
-                        sh "cp ${TELEGRAM_TOKEN} .telegramToken"
-                        sh 'pip3 install -r requirements.txt'
-                        sh "python3 -m pytest --junitxml results.xml tests/*.py"
-                         }
-                      }
+                        catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                            withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
+                                sh "cp ${TELEGRAM_TOKEN} .telegramToken"
+                                sh 'pip3 install -r requirements.txt'
+                                sh "python3 -m pytest --junitxml results.xml tests/*.py"
+                            }
+                        }
                     }
                 }
+
                 stage('pylint') {
                     steps {
                         script {
-                            logs.info 'Starting'
-                            logs.warning 'Nothing to do!'
-                            // Run pylint on *.py files, ignoring errors to not fail the pipeline
-                            sh "python3 -m pylint *.py || true"
+                            catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                                echo 'Starting'
+                                echo 'Nothing to do!'
+                                // Run pylint on *.py files, ignoring errors to not fail the pipeline
+                                sh "python3 -m pylint *.py || true"
+                            }
                         }
                     }
                 }
             }
         }
+
         stage('push') {
             steps {
                 // Push Docker image to Docker Hub
