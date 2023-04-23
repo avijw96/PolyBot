@@ -2,7 +2,7 @@ pipeline {
     options {
         // Configure build discarder using LogRotator strategy
         // Keep artifacts for 10 days and 10 builds
-        buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10'))
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '5', numToKeepStr: '10'))
         // Disable concurrent builds
         disableConcurrentBuilds()
     }
@@ -18,7 +18,6 @@ pipeline {
 
     stages {
         // Define stages for the pipeline
-
         stage('Build Polyapp') {
             steps {
                 // Use Jenkins credentials 'docker-hub-credentials' to login to Docker Hub
@@ -29,7 +28,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             // Define a parallel stage for testing
             parallel {
