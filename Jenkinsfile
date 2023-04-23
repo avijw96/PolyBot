@@ -45,13 +45,11 @@ pipeline {
 
                 stage('pylint') {
                     steps {
-                        script {
-                            catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
-                                echo 'Starting'
-                                echo 'Nothing to do!'
-                                // Run pylint on *.py files, ignoring errors to not fail the pipeline
-                                sh "python3 -m pylint *.py || true"
-                            }
+                        catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                            echo 'Starting'
+                            echo 'Nothing to do!'
+                            // Run pylint on *.py files, ignoring errors to not fail the pipeline
+                            sh "python3 -m pylint *.py || true"
                         }
                     }
                 }
