@@ -6,10 +6,7 @@ pipeline {
         // Disable concurrent builds
         disableConcurrentBuilds()
     }
-    environment {
-        // Set environment variable SNYK_TOKEN with the value from Jenkins credentials with ID 'snyk-token'
-        SNYK_TOKEN = credentials('snyk-token')
-    }
+
     agent {
         // Define agent as Docker container using 'jenkinsagent:latest' image
         // Mount Docker socket to allow Docker commands inside the container
