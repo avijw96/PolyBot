@@ -1,7 +1,3 @@
-// @Library('shared-lib-int') _
-
-//library 'shared-lib-int@main'
-
 pipeline {
     options {
         // Configure build discarder using LogRotator strategy
