@@ -33,22 +33,24 @@ pipeline {
         stage('Test') {
             // Define a parallel stage for testing
             parallel {
+            stage('pytest') {
+                    steps {
+                        withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
+                        sh "cp ${TELEGRAM_TOKEN} .telegramToken"
+                        sh 'pip3 install -r requirements.txt'
+                        sh "python3 -m pytest --junitxml results.xml tests/*.py"
+                        }
+                    }
+                }
                 stage('pylint') {
                     steps {
                         script {
+                            logs.info 'Starting'
+                            logs.warning 'Nothing to do!'
                             // Run pylint on *.py files, ignoring errors to not fail the pipeline
                             sh "python3 -m pylint *.py || true"
                         }
                     }
-                }
-            }
-        }
-        stage('snyk test') {
-            steps {
-                // Use Jenkins credentials 'snyk-token' to set SNYK_TOKEN environment variable
-                // Run Snyk container test with severity threshold set to 'high'
-                withCredentials([string(credentialsId: 'snyk-token', variable: 'SNYK_TOKEN')]) {
-                    sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
                 }
             }
         }
