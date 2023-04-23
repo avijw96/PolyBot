@@ -30,12 +30,12 @@ pipeline {
                                      sh "python3 -m pylint *.py || true"
                                      }
                                }
-                           }
+                         }
                    }
               }
        stage('snyk test') {
             steps {
-            withCredentials([usernamePassword(credentialsId: 'snyk-token')]) {
+            withCredentials([string(credentialsId: 'snyk-token', variable: 'SNYK_TOKEN')]) {
                 sh "snyk container test avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}--severity-threshold=high"
                 }
              }
