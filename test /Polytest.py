@@ -7,7 +7,7 @@ from loguru import logger
 class TestBot(unittest.TestCase):
 
     def setUp(self):
-        with open('.telegramToken') as f:
+        with open('../test1/.telegramToken') as f:
             _token = f.read()
         # create a mock updater object
         self.updater = MagicMock()
