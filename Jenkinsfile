@@ -1,15 +1,10 @@
 pipeline {
     options {
-        // Configure build discarder using LogRotator strategy
-        // Keep artifacts for 10 days and 10 builds
         buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '5', numToKeepStr: '10'))
-        // Disable concurrent builds
         disableConcurrentBuilds()
     }
 
     agent {
-        // Define agent as Docker container using 'jenkinsagent:latest' image
-        // Mount Docker socket to allow Docker commands inside the container
         docker {
             image 'jenkinsagent:latest'
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
@@ -42,22 +37,13 @@ pipeline {
 
                 stage('pylint') {
                     steps {
-                        catchError(message: 'pylint ERROR', buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                             echo 'Starting'
                             echo 'Nothing to do!'
+                            // Run pylint on *.py files, ignoring errors to not fail the pipeline
                             sh "python3 -m pylint *.py || true"
                         }
                     }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Deploy the application using the appdeployments.yaml file
-                // and deploy to the demoapp namespace
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                    sh 'kubectl apply -f appdeployments.yaml -n demoapp'
                 }
             }
         }
