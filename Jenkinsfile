@@ -56,7 +56,7 @@ pipeline {
                 // Deploy the application using the app_deployments.yaml file
                 // and deploy to the demo_app namespace
                 withKubeConfig(credentialsId: 'kubeconfig-credentials', kubeconfigFileVariable: 'KUBECONFIG') {
-                    sh 'kubectl apply -f app-deployments.yaml -n demo_app'
+                    sh 'kubectl apply -f app-deployments.yaml -n demoapp'
                 }
             }
         }
