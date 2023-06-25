@@ -1,4 +1,3 @@
-
 pipeline {
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '5', numToKeepStr: '10'))
@@ -52,13 +51,6 @@ pipeline {
         stage('Push') {
             steps {
                 sh "docker push avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-            sh "kubectl apply -f app-deployment.yaml"
-
             }
         }
     }
