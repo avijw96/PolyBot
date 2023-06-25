@@ -37,22 +37,13 @@ pipeline {
 
                 stage('pylint') {
                     steps {
-                        catchError(message: 'pylint ERROR', buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                             echo 'Starting'
                             echo 'Nothing to do!'
+                            // Run pylint on *.py files, ignoring errors to not fail the pipeline
                             sh "python3 -m pylint *.py || true"
                         }
                     }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Deploy the application using the app_deployments.yaml file
-                // and deploy to the demo_app namespace
-                withCredentials([kubeconfigFile(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
-                    sh 'export KUBECONFIG=${KUBECONFIG} && kubectl apply -f app-deployments.yaml -n demoapp'
                 }
             }
         }
