@@ -49,13 +49,14 @@ pipeline {
                         }
                     }
                 }
-
+            }
+        }
 
         stage('Deploy') {
             steps {
-                // Deploy the application using the app_deployments.yaml file
+                // Deploy the application using the appdeployments.yaml file
                 // and deploy to the demoapp namespace
-                   withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
                     sh 'kubectl apply -f appdeployments.yaml -n demoapp'
                 }
             }
