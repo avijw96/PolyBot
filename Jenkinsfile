@@ -1,20 +1,15 @@
 pipeline {
-    agent {
-        kubernetes {
-            yaml '''
-                apiVersion: v1
-                kind: Pod
-                spec:
-                  containers:
-                  - name: jenkins-agent
-                    image: jenkins-agent:latest
-                    command:
-                    - cat
-                    tty: true
-            '''
-        }
+    options {
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '5', numToKeepStr: '10'))
+        disableConcurrentBuilds()
     }
 
+    agent {
+        docker {
+            image 'jenkinsagent:latest'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     stages {
         stage('Build Polyapp') {
@@ -56,8 +51,8 @@ pipeline {
             steps {
                 // Deploy the application using the app_deployments.yaml file
                 // and deploy to the demo_app namespace
-                withKubeConfig(credentialsId: 'kubeconfig-credentials', contextName: 'kind-kind') {
-                    sh 'kubectl apply -f appdeployments.yaml -n demoapp'
+                withCredentials([kubeconfigFile(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
+                    sh 'export KUBECONFIG=${KUBECONFIG} && kubectl apply -f app-deployments.yaml -n demo_app'
                 }
             }
         }
