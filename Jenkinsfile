@@ -56,7 +56,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                    sh 'export KUBECONFIG=${KUBECONFIG}'
                     sh 'kubectl apply -f app-deployment.yaml -n demoapp'
                 }
             }
