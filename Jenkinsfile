@@ -53,5 +53,13 @@ pipeline {
                 sh "docker push avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER}"
             }
         }
+        stage('Deploy') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh 'export KUBECONFIG=${KUBECONFIG}'
+                    sh 'kubectl apply -f app-deployment.yaml -n demo_app'
+                }
+            }
+        }
     }
 }
