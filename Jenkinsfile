@@ -15,7 +15,7 @@ pipeline {
         stage('Build Polyapp') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                    sh "docker build -t avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER} . "
+                    sh "docker build -t avijwdocker/polybot-aviyaaqov:poly-bot-${env.BUILD_NUMBER} ."
                     sh "docker login --username $user --password $pass"
                 }
             }
@@ -29,7 +29,7 @@ pipeline {
                             withCredentials([file(credentialsId: 'telegramToken', variable: 'TELEGRAM_TOKEN')]) {
                                 sh "cp ${TELEGRAM_TOKEN} .telegramToken"
                                 sh 'pip3 install -r requirements.txt'
-                                sh "python3 -m pytest --junitxml results.xml tests/*.py"
+                                sh "python3 -m pytest --junitxml results.xml tests/"
                             }
                         }
                     }
@@ -37,10 +37,7 @@ pipeline {
 
                 stage('pylint') {
                     steps {
-                        catchError(message:'pylint ERROR',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
-                            echo 'Starting'
-                            echo 'Nothing to do!'
-                            // Run pylint on *.py files, ignoring errors to not fail the pipeline
+                        catchError(message: 'pylint ERROR', buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                             sh "python3 -m pylint *.py || true"
                         }
                     }
